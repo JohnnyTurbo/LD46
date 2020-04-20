@@ -15,6 +15,7 @@ public class CameraController : MonoBehaviour
     float rightZone;
     float botZone;
     float topZone;
+    bool shouldFreeze = false;
 
     private void Start()
     {
@@ -26,6 +27,16 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            shouldFreeze = !shouldFreeze;
+        }
+
+        if (shouldFreeze)
+        {
+            return;
+        }
+
         if (Input.mousePosition.x <= leftZone)
         {
             //Debug.Log("Go Left " + leftZone);
@@ -66,7 +77,7 @@ public class CameraController : MonoBehaviour
         {
             //Debug.Log("sub zero");
             Vector3 zoomOutTarget = Vector3.Normalize(transform.position - earth.position) * maxCamDist;
-            Debug.Log(zoomOutTarget.ToString());
+            //Debug.Log(zoomOutTarget.ToString());
             transform.position = Vector3.MoveTowards(transform.position, zoomOutTarget, Time.deltaTime * zoomSpeed);
             if (Vector3.Distance(transform.position, earth.position) >= maxCamDist)
             {
