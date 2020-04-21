@@ -39,15 +39,15 @@ public class ServerController : MonoBehaviour
         {
             curServerLoad--;
             timeSinceLastOp -= timePerOp;
+            moneyInBank += moneyPerGame;
+            gamesProcessed += 1;
         }
         UpdateServerUI();       
     }
 
     public void IncreaseServerLoad(int numIncrease)
     {
-        curServerLoad += numIncrease;
-        moneyInBank += moneyPerGame;
-        gamesProcessed += numIncrease;
+        curServerLoad += numIncrease;       
         UpdateServerUI();
     }
 
