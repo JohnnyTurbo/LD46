@@ -15,6 +15,7 @@ public class DeleteSystem : SystemBase
         Entities.ForEach((Entity entity, int entityInQueryIndex, in DeleteTag delTag) => 
         {
             //commandBuffer.DestroyEntity(entity);
+            Spawner.instance.jamGames.Remove(entity);
             EntityManager.DestroyEntity(entity);
             ServerController.instance.IncreaseServerLoad(1);
         }).WithoutBurst().WithStructuralChanges().Run();

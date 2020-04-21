@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public static CameraController instance;
+
     public Transform earth;
 
     public float horizontalPct, verticalPct;
@@ -16,6 +18,11 @@ public class CameraController : MonoBehaviour
     float botZone;
     float topZone;
     bool shouldFreeze = false;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
@@ -84,5 +91,10 @@ public class CameraController : MonoBehaviour
                 //transform.position = zoomOutTarget;
             }
         }
+    }
+
+    public void SetShouldFreeze(bool freezeGame)
+    {
+        shouldFreeze = freezeGame;
     }
 }

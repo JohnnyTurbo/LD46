@@ -19,7 +19,8 @@ public class AttractorSystem : SystemBase
         var commandBuffer = ecbSystem.CreateCommandBuffer().ToConcurrent();
         float deltaTime = Time.DeltaTime;
         List<float3[]> allPaths = InputController.instance.movePaths;
-        int arrayLength = allPaths.Count * allPaths[0].Length;
+        int singleArrLength = allPaths[0].Length;
+        int arrayLength = allPaths.Count * singleArrLength;
         NativeArray<float3> pathList = new NativeArray<float3>(arrayLength, Allocator.TempJob);
 
         int i = 0;
@@ -30,26 +31,22 @@ public class AttractorSystem : SystemBase
                 pathList[i] = allPaths[y][x];
                 i++;
             }
-            //Debug.Log("array y: " + y + " has length of " + allPaths[y].Length);
         }
 
         Entities.ForEach((Entity entity, int entityInQueryIndex, ref Translation position, ref JamGameData jamGameData, in JamTravelData jamTravelData) =>
         {
             if (jamGameData.isAttracted)
             {
-                float3 curTarget = pathList[jamGameData.curPosIndex];
+                int pathIndex = jamGameData.attractorID * singleArrLength + jamGameData.curPosIndex;
+                float3 curTarget = pathList[pathIndex];
 
                 position.Value += deltaTime * jamTravelData.speed * (curTarget - position.Value);
                 if (math.distance(position.Value, curTarget) < 1f)
                 {
                     jamGameData.curPosIndex++;
-                    if (jamGameData.curPosIndex >= pathList.Length)
+                    if (jamGameData.curPosIndex >= singleArrLength)
                     {
                         commandBuffer.AddComponent(entityInQueryIndex, entity, new DeleteTag());
-                        //jamGameData.curPosIndex = 0;
-                        //commandBuffer.DestroyEntity(entityInQueryIndex, entity);
-                        //ServerController.instance.IncreaseServerLoad(1);
-                        //numDestroyed++;
                     }
                 }
             }
@@ -60,6 +57,5 @@ public class AttractorSystem : SystemBase
         }).ScheduleParallel();
         Dependency.Complete();
         pathList.Dispose();
-        //ServerController.instance.IncreaseServerLoad(numDestroyed);
     }
 }

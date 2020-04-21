@@ -9,12 +9,14 @@ public class ServerController : MonoBehaviour
 
     public int maxServerLoad;
     public Slider serverLoadSlider;
-    //public int opsPerSecond;
     public float timePerOp;
     public Text serverLoadText;
+    public Text moneyText, gamesText;
+    public int moneyInBank;
+    public int moneyPerGame;
 
-    private int curServerLoad = 50;
-    
+    private int curServerLoad = 0;
+    private int gamesProcessed;
     private float timeSinceLastOp;
 
     private void Awake()
@@ -24,9 +26,9 @@ public class ServerController : MonoBehaviour
 
     private void Start()
     {
-        //timePerOp = 1f / opsPerSecond;
         timeSinceLastOp = 0f;
         serverLoadSlider.maxValue = maxServerLoad;
+        UpdateServerUI();
     }
 
     private void Update()
@@ -44,6 +46,8 @@ public class ServerController : MonoBehaviour
     public void IncreaseServerLoad(int numIncrease)
     {
         curServerLoad += numIncrease;
+        moneyInBank += moneyPerGame;
+        gamesProcessed += numIncrease;
         UpdateServerUI();
     }
 
@@ -51,6 +55,10 @@ public class ServerController : MonoBehaviour
     {
         serverLoadSlider.value = curServerLoad;
         serverLoadText.text = "Server Load " + curServerLoad + " / " + maxServerLoad;
+        moneyText.text = "$" + moneyInBank;
+        gamesText.text = "Games Processed: " + gamesProcessed;
     }
+
+    
 
 }

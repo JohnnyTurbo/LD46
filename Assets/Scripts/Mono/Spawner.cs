@@ -1,10 +1,13 @@
-﻿using Unity.Entities;
+﻿using System.Collections.Generic;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    public static Spawner instance;
+
     public GameObject gameJamPrefab;
     //public GameObject earthObj;
     public Color[] colors;
@@ -15,9 +18,10 @@ public class Spawner : MonoBehaviour
     public float distToTarget;
     public float entSpeed;
     public float spawnTime;
+    public List<Entity> jamGames;
 
     private float timeSinceLastSpawn = 0;
-
+    
     EntityManager entityManager;
     Entity gameJamEntity;
     /*
@@ -25,11 +29,18 @@ public class Spawner : MonoBehaviour
     Vector3 rayStart;
     Vector3 rayEnd;
     */
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
         gameJamEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(gameJamPrefab, settings);
-        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager; 
+        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        jamGames = new List<Entity>();
     }
 
     private void Update()
@@ -99,6 +110,7 @@ public class Spawner : MonoBehaviour
                 distToTarget = distToTarget,
                 startPos = spawnPos
             });
+            jamGames.Add(newJamGame);
         }
         /*
         do
