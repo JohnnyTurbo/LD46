@@ -9,7 +9,6 @@ public class Spawner : MonoBehaviour
     public static Spawner instance;
 
     public GameObject gameJamPrefab;
-    //public GameObject earthObj;
     public Color[] colors;
     public string[] names;
     public int[] pcts;
@@ -24,11 +23,6 @@ public class Spawner : MonoBehaviour
     
     EntityManager entityManager;
     Entity gameJamEntity;
-    /*
-    Ray ray;
-    Vector3 rayStart;
-    Vector3 rayEnd;
-    */
 
     private void Awake()
     {
@@ -66,7 +60,6 @@ public class Spawner : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hit, 10f, layerMask))
                 {
-                    //Debug.Log("HIT");
                     Renderer renderer = hit.transform.GetComponent<MeshRenderer>();
                     Texture2D texture = renderer.material.mainTexture as Texture2D;
                     Vector2 pixelUV = hit.textureCoord;
@@ -90,10 +83,8 @@ public class Spawner : MonoBehaviour
                 }
             }
             while (!foundCandidate);
-            //Debug.Log("Spawning on land");
             //Debug.Log(tries + " for layer " + names[randLayer] + " but actually: " + names[indexr]);
             Vector3 spawnPos = randomPos * 49.5f;
-            //Instantiate(gameJamPrefab, spawnPos, Quaternion.identity);
             Entity newJamGame = entityManager.Instantiate(gameJamEntity);
             entityManager.SetComponentData(newJamGame, new Translation { Value = spawnPos });
             entityManager.SetComponentData(newJamGame, new JamGameData
@@ -101,8 +92,6 @@ public class Spawner : MonoBehaviour
                 isAttracted = false,
                 curPosIndex = 0,
                 attractorID = -1
-                //distToTarget = distToTarget,
-                //speed = entSpeed
             });
             entityManager.SetComponentData(newJamGame, new JamTravelData
             {
@@ -112,17 +101,6 @@ public class Spawner : MonoBehaviour
             });
             jamGames.Add(newJamGame);
         }
-        /*
-        do
-        {
-
-        }
-        while()
-        */
-        /*
-        var instance = entityManager.Instantiate(gameJamEntity);
-        entityManager.SetComponentData(instance, new Translation { Value = position });
-        */
     }
 
     private int FindIndexFromColor(Color col)
@@ -154,12 +132,4 @@ public class Spawner : MonoBehaviour
         }
         return 5;
     }
-
-    /*
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(rayStart, rayEnd);
-    }
-    */
 }

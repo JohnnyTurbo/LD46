@@ -27,7 +27,6 @@ public class InputController : MonoBehaviour
     public LineRenderer[] uplinks;
 
     private Camera mainCam;
-    //private LineRenderer arc;
     private Entity attractorEntity;
     private Entity curAttractor;
     private EntityManager entityManager;
@@ -44,7 +43,6 @@ public class InputController : MonoBehaviour
     private void Start()
     {
         mainCam = Camera.main;
-        //arc = GetComponent<LineRenderer>();
         curClickPoints = new List<GameObject>();
         curAttractors = new List<Entity>();
 
@@ -89,14 +87,12 @@ public class InputController : MonoBehaviour
             {
                 if (isMovingAttractor)
                 {
-                    //test that we can place collector here
                     isMovingAttractor = false;
                     CollectorData curCollectorData = entityManager.GetComponentData<CollectorData>(curAttractor);
                     entityManager.SetComponentData(curAttractor, new CollectorData
                     {
                         canCollect = true,
                         attractorID = curCollectorData.attractorID
-                        //attrationPos = GetAttractionPath(hit.point)
                     });
                     GameObject newClickTarget = Instantiate(clickTargetPrefab, hit.point, Quaternion.identity);
                     newClickTarget.GetComponent<ClickTarget>().attractorEnt = curAttractor;
@@ -122,9 +118,6 @@ public class InputController : MonoBehaviour
                 }
                 else if(hit.transform.gameObject.layer == 10) //if hit LDServer
                 {
-                    //Debug.Log("LDServer");
-                    //check if already open
-                    //hudContainer.SetActive(false);
                     serverUpgradeContainer.SetActive(true);
                     CameraController.instance.SetShouldFreeze(true);
                     UpgradeController.instance.UpdateUpgradeUI();
@@ -193,11 +186,11 @@ public class InputController : MonoBehaviour
         for (int i = 0; i < uplink.positionCount; i++)
         {
             float slerpPct = i / (lineSegments - 1f);
-
-            float heightMod = sinMod * Mathf.Sin(slerpPct * Mathf.PI);
-
             Vector3 arcPointPos = Vector3.Slerp(startPoint, ldMainServer.position, slerpPct);
+            
+            float heightMod = sinMod * Mathf.Sin(slerpPct * Mathf.PI);
             arcPointPos = arcPointPos + (arcPointPos.normalized * heightMod * maxLineHeight);
+            
             uplink.SetPosition(i, arcPointPos);
         }
     }

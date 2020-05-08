@@ -16,7 +16,7 @@ public class MainMenuSpawner : MonoBehaviour
 
     public Texture2D imageMap;
 
-    public GameObject mainMenuContainer, howToPlayContainer, loadScreenContainer;
+    public GameObject mainMenuContainer, howToPlayContainer, loadScreenContainer, allUIContainer;
     public Button playButton;
     public float loadDelay;
 
@@ -25,9 +25,11 @@ public class MainMenuSpawner : MonoBehaviour
     int numEnts = 0;
     bool exitingMenu = false;
 
+    GameObjectConversionSettings settings;
+
     void Start()
     {
-        var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+        settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
         gameJamEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(gameJamPrefab, settings);
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
@@ -37,6 +39,17 @@ public class MainMenuSpawner : MonoBehaviour
     private void Update()
     {
         if (exitingMenu) { return; }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            allUIContainer.SetActive(!allUIContainer.activeSelf);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            DestroyAllEntities();
+            gameJamEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(gameJamPrefab, settings);
+        }
+
         if(numEnts >= 65000) { return; }
         bool foundCandidate = false;
         Vector3 randomPos;
@@ -111,11 +124,17 @@ public class MainMenuSpawner : MonoBehaviour
     private IEnumerator LoadGame()
     {
         loadScreenContainer.SetActive(true);
+        DestroyAllEntities();
+        yield return new WaitForSeconds(loadDelay);
+        SceneManager.LoadScene(1);
+    }
+
+    private void DestroyAllEntities()
+    {
         NativeArray<Entity> entities = entityManager.GetAllEntities(Allocator.Temp);
         entityManager.DestroyEntity(entities);
         entities.Dispose();
-        yield return new WaitForSeconds(loadDelay);
-        SceneManager.LoadScene(1);
+        numEnts = 0;
     }
 
     public void OnButtonBack()

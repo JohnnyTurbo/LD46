@@ -857,6 +857,7 @@ MonoBehaviour:
   mainMenuContainer: {fileID: 1451424419}
   howToPlayContainer: {fileID: 1706658246}
   loadScreenContainer: {fileID: 1160904973}
+  allUIContainer: {fileID: 144356403}
   playButton: {fileID: 68017623}
   loadDelay: 1
 --- !u!1 &574063406
